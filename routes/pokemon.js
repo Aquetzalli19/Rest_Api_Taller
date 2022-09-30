@@ -11,13 +11,24 @@ pokemon.get("/", async(req, res, next) => {
     return res.status(200).json(pkmn)
 
 });
+// ([0-9]{1,3})
+// pokemon.get('/:id(^([\-]?[0-9]*[\.]?[0-9]+)$)', (req, res, next) => {
+//     return res.status(404).send("Pokemon no valido");
+//     console.log('desde negativo'); 
+// });
 pokemon.get("/:id([0-9]{1,3})", async (req, res, next) => {
+    const idLength = await db.query('SELECT count(pok_id) FROM pokemon')
     const id = req.params.id;
     const pk = await db.query(`SELECT * FROM pokemon WHERE pok_id = ${id}`);
+
+    console.log(idLength);
+
     if (id >= 1 && id <= 722) {
         return res.status(200).json(pk)
-    }
+    }else{
         return res.status(404).send("Pokemon no encontrado");
+    }
+        
 });
 
 pokemon.get("/:name([A-Za-z]+)", async(req, res, next) =>{
